@@ -20,7 +20,7 @@ resource "kubernetes_ingress_v1" "app" {
       host = local.host
       http {
         path {
-          path = "/"
+          path      = "/"
           path_type = "Prefix"
           backend {
             service {

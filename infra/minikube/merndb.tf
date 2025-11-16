@@ -2,7 +2,7 @@ resource "kubernetes_deployment" "mongo" {
   metadata {
     name      = "mongo"
     namespace = var.namespace
-    labels = { app = "mongo" }
+    labels    = { app = "mongo" }
   }
   spec {
     replicas = 1
@@ -13,7 +13,7 @@ resource "kubernetes_deployment" "mongo" {
         container {
           name  = "mongo"
           image = "mongo:6.0"
-          port  { container_port = 27017 }
+          port { container_port = 27017 }
           args = ["--bind_ip_all"]
           resources {
             requests = { cpu = "50m", memory = "128Mi" }
@@ -29,11 +29,15 @@ resource "kubernetes_service" "mongo" {
   metadata {
     name      = "mongo-svc"
     namespace = var.namespace
-    labels = { app = "mongo" }
+    labels    = { app = "mongo" }
   }
   spec {
     selector = { app = "mongo" }
-    port { port = 27017, target_port = 27017 }
+    port {
+      port        = 27017
+      target_port = 27017
+    }
+
     type = "ClusterIP"
   }
 }

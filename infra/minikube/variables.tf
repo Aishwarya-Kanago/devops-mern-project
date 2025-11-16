@@ -4,9 +4,9 @@ variable "namespace" {
   default     = "demo"
 }
 
-variable "domain" { 
-  type = string
-  default = "" 
+variable "domain" {
+  type    = string
+  default = ""
 }
 
 variable "replicas" {

@@ -1,10 +1,15 @@
-locals {
-  # Use nip.io automatically if domain is empty
-  host = var.domain != "" ? "app.${var.domain}" : "app.${chomp(trimspace(data.external.minikube_ip.result.ip))}.nip.io"
+# Get Minikube IP using external provider
+data "external" "minikube_ip" {
+  program = ["powershell", "-Command", "minikube ip | % { '{\"ip\":\"' + $_ + '\"}' }"]
 }
 
-data "external" "minikube_ip" {
-  program = ["bash", "-lc", "minikube ip | tr -d '\\n' | awk '{print \"{\\\"ip\\\":\\\"\"$0\"\\\"}\"}'"]
+# Build hostname
+locals {
+  minikube_ip = data.external.minikube_ip.result.ip
+}
+
+locals {
+  host = var.domain != "" ? "app.${var.domain}" : "app.${local.minikube_ip}.nip.io"
 }
 
 resource "kubernetes_ingress_v1" "app" {
@@ -15,6 +20,7 @@ resource "kubernetes_ingress_v1" "app" {
       "kubernetes.io/ingress.class" = "nginx"
     }
   }
+
   spec {
     rule {
       host = local.host

@@ -1,0 +1,78 @@
+pipeline {
+  agent any
+
+  environment {
+    FRONTEND_REPO = 'https://github.com/Aishwarya-Kanago/Admin-Dashboard.git'
+    BACKEND_REPO  = 'https://github.com/Aishwarya-Kanago/AdminDashboard-Backend.git'
+    INFRA_REPO    = 'https://github.com/Aishwarya-Kanago/Minikube-Terraform-GitHub-Actions.git'
+  }
+
+  stages {
+
+    /* -----------------------------
+       CLONE ALL REPOS
+    --------------------------------*/
+    stage('Clone All Repos') {
+      steps {
+        dir('frontend') { git branch: 'main', url: env.FRONTEND_REPO }
+        dir('backend')  { git branch: 'main', url: env.BACKEND_REPO }
+        dir('infra')    { git branch: 'main', url: env.INFRA_REPO }
+      }
+    }
+
+    /* -----------------------------
+       BUILD DOCKER IMAGES
+    --------------------------------*/
+    stage('Build Docker Images') {
+      steps {
+        echo "Building Docker Images..."
+
+        // Build frontend image
+        dir('frontend') {
+          bat 'docker build -t mern-frontend:local .'
+        }
+
+        // Build backend image
+        dir('backend') {
+          bat 'docker build -t mern-backend:local .'
+        }
+
+        // Load images into Minikube
+        bat '''
+          echo Loading images into Minikube...
+          minikube image load mern-frontend:local
+          minikube image load mern-backend:local
+        '''
+      }
+    }
+
+    /* -----------------------------
+       TERRAFORM INIT & APPLY
+    --------------------------------*/
+    stage('Terraform Init & Apply') {
+      steps {
+        dir('infra') {
+          bat '''
+            terraform init
+            terraform validate
+            terraform apply ^
+              -var="frontend_image=mern-frontend:local" ^
+              -var="backend_image=mern-backend:local" ^
+              -auto-approve
+          '''
+        }
+      }
+    }
+
+    /* -----------------------------
+       VERIFY DEPLOYMENT
+    --------------------------------*/
+    stage('Verify Deployment') {
+      steps {
+        bat 'kubectl get pods -n demo'
+        bat 'kubectl get svc -n demo'
+        bat 'kubectl get ingress -n demo'
+      }
+    }
+  }
+}

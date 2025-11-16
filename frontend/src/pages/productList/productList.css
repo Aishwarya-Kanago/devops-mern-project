@@ -1,0 +1,97 @@
+.productList-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.productList-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.product-table h3 {
+  font-size: 30px;
+  font-weight: 500;
+  color: black;
+  margin: 0;
+}
+
+.product-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 80%;
+  gap: 1rem;
+}
+
+.product-card {
+  display: none;
+}
+
+.productList-edit-user-dark path {
+  color: #007aff !important;
+}
+
+.productList-delete-user-dark path{
+  color: rgb(192, 0, 38) !important;
+}
+
+@media (max-width: 600px) {
+  .product-table-main-container {
+    display: none;
+  }
+
+  .product-card {
+    display: block;
+  }
+
+  .product-card-flex {
+    display: flex;
+    gap: 25px;
+  }
+
+  .product-card {
+    border-radius: 8px !important;
+    box-shadow: 0px 10px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  .addButton svg {
+    font-size: 12px;
+  }
+
+  .product-table {
+    width: auto;
+    margin: 0px 15px 0px 15px;
+  }
+
+  .tableHeaderContainer {
+    padding: 4px;
+  }
+
+  .tableFilterContainer__filter {
+    font-size: 10px;
+  }
+
+  .searchIcon {
+    font-size: 10px !important;
+  }
+
+  .tableFilterContainer .status-info label {
+    font-size: 12px;
+  }
+
+  .tableFilterContainer {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .status-info {
+    display: flex;
+    align-items: center;
+  }
+  .status-info label {
+    display: none;
+  }
+}

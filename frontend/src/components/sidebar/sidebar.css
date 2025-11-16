@@ -1,0 +1,174 @@
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 15%;
+  gap: 20px;
+  background-color: #f9f9fa;
+  position: sticky;
+  top: 0;
+}
+
+.main-menu-dark {
+  border-right: 1px solid rgb(56, 56, 56);
+}
+
+.main-menu:hover {
+  box-shadow: 5px 5px 5px 5px rgb(195, 225, 235);
+}
+
+.dashboard,
+.quick-menu,
+.notifications,
+.staff {
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  gap: 13px;
+}
+
+.main-menu h3 {
+  margin-left: 20px;
+  color: grey;
+  font-weight: 300;
+}
+
+.home,
+.analytics,
+.sales {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 20px;
+  align-items: center;
+}
+
+.users,
+.products,
+.transactions,
+.reports {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 20px;
+  align-items: center;
+}
+
+.mail,
+.feedback,
+.messages {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 20px;
+  align-items: center;
+}
+
+.manage,
+.analytics,
+.reports-staff {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-left: 20px;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  margin-top: 30px;
+}
+
+.logo img {
+  height: 50px;
+  border-radius: 50%;
+}
+
+.logo-light img {
+  mix-blend-mode: multiply;
+}
+
+.logo-dark img {
+  filter: invert();
+}
+
+.logo span {
+  font-size: large;
+  font-weight: 600;
+}
+
+.nav-bar-icon {
+  display: none;
+}
+
+.link.active {
+  font-size: 18px;
+  font-weight: 600;
+  color: #007aff !important;
+}
+
+@media (max-width: 600px) {
+  .nav-bar-icon {
+    display: inline-block;
+  }
+
+  .main-menu {
+    width: 45vw;
+    padding-right: 15px;
+    background-color: #f9f9fa;
+    height: max-content;
+    padding-bottom: 40px;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .logo span {
+    font-size: 1rem;
+  }
+
+  .main-menu {
+    display: none;
+  }
+
+  .main-menu.open {
+    display: flex;
+    font-size: 16px;
+    height: 100%;
+  }
+
+  .main-menu h3 {
+    font-size: 1rem;
+  }
+
+  .home,
+  .analytics,
+  .sales,
+  .users,
+  .products,
+  .transactions,
+  .reports,
+  .mail,
+  .feedback,
+  .messages,
+  .manage,
+  .analytics,
+  .reports-staff {
+    font-size: 0.9rem;
+  }
+
+  .nav-bar-icon {
+    position: absolute;
+    z-index: 100;
+    left: 1rem;
+    top: 8px;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .nav-bar-icon.icon-open {
+    left: 9rem;
+  }
+}

@@ -1,0 +1,212 @@
+.userList {
+  flex: 4;
+}
+
+.userList-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userList-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.action-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  height: 100%;
+}
+
+.data-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 80%;
+  gap: 1rem;
+}
+
+.edit-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #007aff;
+}
+
+.userList-edit-user-dark path {
+  color: #007aff !important;
+}
+
+.action-icons .userList-delete-user,
+.action-icons .productList-delete-user {
+  color: rgb(192, 0, 38) !important;
+}
+
+.userList-delete-user-dark path {
+  color: rgb(192, 0, 38) !important;
+}
+
+.userFlex {
+  display: flex;
+  align-items: center;
+}
+
+.tableHeaderContainer {
+  padding: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.user-title {
+  font-size: 16px !important;
+}
+
+.tableFilterContainer {
+  gap: 20px;
+}
+
+.tableFilterContainer__search {
+  width: 20rem;
+  padding-left: 0 !important;
+}
+
+.searchBarContainer input:focus {
+  border: none;
+  outline: none;
+}
+
+.tableFilterContainer__filter {
+  padding: 8px 10px;
+  background: whitesmoke;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.tableFilterContainer__filter-dark {
+  background: rgb(41 39 39) !important;
+}
+
+.tableFilterContainer .status-info .status {
+  margin-left: 12px;
+  font-size: 14px;
+}
+
+.tableFilterContainer .status-info label {
+  font-size: 14px;
+}
+
+.searchBarContainer {
+  background: whitesmoke;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  gap: 2px;
+}
+
+.searchBarContainer-dark {
+  background: rgb(41 39 39) !important;
+}
+
+.searchIcon {
+  font-size: 1.2rem !important;
+  color: gray;
+  background: transparent !important;
+}
+
+.addButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #007aff, #0099ff);
+  color: white;
+  cursor: pointer;
+}
+
+.addButton svg {
+  font-size: 20px;
+}
+
+.addButton-dark svg {
+  background: transparent;
+}
+
+.user-card {
+  display: none;
+}
+
+.user-card .css-r3djoj-MuiTouchRipple-root {
+  background-color: transparent;
+}
+
+@media (max-width: 600px) {
+  .tableHeaderContainer {
+    padding: 4px;
+  }
+
+  .searchIcon {
+    font-size: 10px !important;
+  }
+  .searchBarContainer {
+    width: 40%;
+  }
+
+  .tableFilterContainer .status-info label {
+    font-size: 12px;
+  }
+  .tableFilterContainer .status-info .status {
+    font-size: 10px;
+    padding: 8px 4px;
+  }
+
+  .tableFilterContainer {
+    gap: 12px;
+  }
+
+  .user-title {
+    font-size: 12px !important;
+  }
+  .justifySpaceBetween {
+    gap: 10px;
+  }
+
+  .data-table {
+    width: auto;
+    margin: 0px 15px 0px 15px;
+  }
+
+  .user-table {
+    display: none;
+  }
+
+  .user-card {
+    display: block;
+  }
+
+  .user-card-flex {
+    display: flex;
+    gap: 25px;
+  }
+
+  .user-card {
+    border-radius: 8px !important;
+    box-shadow: 0px 10px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+  .user-title {
+    display: none;
+  }
+  .addButton svg {
+    font-size: 12px;
+  }
+}

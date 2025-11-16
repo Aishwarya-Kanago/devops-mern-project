@@ -1,0 +1,99 @@
+.latest-transactions img {
+  height: 40px;
+  border-radius: 50%;
+  width: 40px;
+  object-fit: cover;
+}
+
+.table-for-transactions {
+  width: 90%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  margin-top: 10px;
+}
+
+th {
+  padding: 15px;
+  background-color: #f4f4f4;
+  color: #555;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+td {
+  padding: 15px;
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+}
+
+.latest-transactions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 30px;
+  background-color: #f9f9fa;
+  border-radius: 16px;
+}
+
+.customer-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+}
+
+.widgetlg-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 4px 12px 4px 12px;
+}
+
+td .widgetlg-btnApproved {
+  background-color: #d6ebdc !important;
+  color: green !important;
+}
+
+td .widgetlg-btnDeclined {
+  background-color: #ebcad0 !important;
+  color: crimson !important;
+}
+
+td .widgetlg-btnPending {
+  background-color: #c4ddf7 !important;
+  color: #0065d1 !important;
+}
+
+@media (max-width: 600px) {
+  .latest-transactions {
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  th,
+  td,
+  tr,
+  .widgetlg-btn {
+    font-size: 12px;
+  }
+
+  td,
+  th {
+    padding: 12px;
+  }
+
+  .latest-transactions img {
+    height: 35px;
+    width: 35px;
+  }
+
+  .table-for-transactions {
+    width: 100%;
+  }
+}

@@ -1,0 +1,241 @@
+.user-page-box {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+  gap: 30px;
+  margin-right: 30px;
+}
+
+.user-top-bar {
+  width: 100%;
+}
+
+.create-btn {
+  width: 80px;
+  border: none;
+  padding: 5px;
+  background-color: teal;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.user {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: 40px;
+}
+
+.profile-img {
+  border-radius: 8px;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.user-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 8px;
+  align-items: center;
+  padding: 20px;
+  box-shadow: -1px 3px 7px 1px rgb(213 213 213 / 71%);
+}
+
+.user-main-info-dark {
+  border: 1px solid rgb(56, 56, 56);
+}
+
+.user-main-info svg {
+  font-size: 16px;
+}
+
+.user-main-info-section-2 {
+  margin-top: 30px;
+  align-items: flex-start;
+}
+
+.user-main-info-section-2-dark {
+  border: 1px solid rgb(56, 56, 56);
+}
+
+.edit-userinfo {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  box-shadow: -1px 3px 7px 1px rgb(213 213 213 / 71%);
+}
+
+.user-info-col-1 {
+  flex: 1;
+}
+
+.user-img img {
+  height: 40px;
+  border-radius: 50%;
+  width: 40px;
+  object-fit: cover;
+}
+
+.user-img {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.account-details,
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.account-name,
+.account-date,
+.contact-number,
+.email-info,
+.work-location {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-box {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.edit-userinfo-dark {
+  border: 1px solid rgb(56, 56, 56);
+}
+
+.edit {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.user-info-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.user-update {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.update-btn {
+  background-color: teal !important;
+  color: white;
+  width: 10rem;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-details .name {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.user-details .role {
+  font-size: 16px;
+  color: gray;
+}
+
+.details-sub-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.details-info-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: gray;
+}
+
+.profile-pic-container {
+  position: relative;
+  width: 100%;
+}
+
+.profile-pic-container .edit-profile-pic {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 10px;
+  right: 10px;
+  background-color: white;
+  border-radius: 50%;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.profile-pic-container .edit-profile-pic svg {
+  cursor: pointer;
+  background: transparent !important;
+}
+
+.edit-icon-dark {
+  background: transparent !important;
+}
+
+.edit-profile-pic path {
+  color: black !important;
+}
+
+.user-info-input-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-info-input-flex span {
+  font-size: 14px;
+  color: gray;
+  width: 10rem;
+  font-weight: 500;
+}
+
+.user-info-input-flex input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid lightgray;
+  font-size: 14px;
+  width: 20rem;
+  font-weight: 500;
+}
+
+.user-info-input-flex input {
+  border: 1px solid rgb(115 115 115);
+}
+
+@media (max-width: 600px) {
+  .user {
+    flex-direction: column;
+  }
+
+  .user-page-box {
+    margin: 0 15px 15px 15px;
+    height: auto;
+  }
+}

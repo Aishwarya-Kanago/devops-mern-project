@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Source Sans 3", sans-serif;
+  font-optical-sizing: auto;
+}
+
+.home-page {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+  transition: font-size 0.3s ease-in-out, font-weight 0.3s ease-in-out;
+}
+
+.parent-topbar {
+  flex: 1;
+}
+
+.flex {
+  display: flex;
+}
+
+.alignCenter {
+  align-items: center;
+}
+
+.justifyContentCenter {
+  justify-content: center;
+}
+
+.justifySpaceBetween {
+  justify-content: space-between;
+}
+
+/* ################# Dark Mode ######################## */
+
+.darkMode,
+.darkMode * {
+  background-color: #010212;
+  color: white !important;
+  box-shadow: none !important;
+}
+
+.new-joinee-list-dark,
+.chart-container-dark,
+.latest-transactions-dark,
+.product-card-dark,
+.user-card-dark {
+  border: 1px solid rgb(56, 56, 56);
+}
+
+.tableHeaderContainer-dark {
+  border: 2px solid rgb(56, 56, 56);
+}
+
+.user-table .css-r3djoj-MuiTouchRipple-root,
+.product-table-main-container .css-r3djoj-MuiTouchRipple-root {
+  background-color: transparent !important;
+}
+
+.user-card .delete-button,
+.product-card .delete-button {
+  color: crimson !important;
+}
+
+.user-card .edit-button,
+.product-card .edit-button {
+  color: #007aff !important;
+}
+
+.main-menu-dark * {
+  color: inherit !important;
+}
+
+@media (max-width: 600px) {
+  .home-page {
+    display: inline-block;
+  }
+}

@@ -1,0 +1,23 @@
+.home-page-info {
+  margin: 0 2.5rem 2.5rem 0;
+  display: flex;
+  gap: 30px;
+  flex-direction: column;
+}
+
+.new-joinee-tab {
+  display: flex;
+  gap: 30px;
+}
+
+@media (max-width: 600px) {
+  .home-page-info {
+    margin: 1rem;
+    gap: 16px;
+  }
+
+  .new-joinee-tab{
+    flex-direction: column;
+  }
+}
+

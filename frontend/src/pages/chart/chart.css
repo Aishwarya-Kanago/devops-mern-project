@@ -1,0 +1,30 @@
+.chart-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  background-color: #f9f9fa;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.sub-title {
+  font-weight: 600;
+  color: black;
+  font-size: 20px;
+}
+
+.recharts-responsive-container {
+  height: 400px !important;
+}
+
+@media (max-width: 600px) {
+  .recharts-responsive-container {
+    height: 200px !important;
+  }
+
+  .sub-title {
+    font-size: 18px;
+  }
+}

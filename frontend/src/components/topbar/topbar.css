@@ -1,0 +1,26 @@
+.topbar-fields {
+  display: flex;
+  gap: 10px;
+  color: rgb(57, 196, 251);
+  justify-content: right;
+  align-items: center;
+  margin-right: 15px;
+  cursor: pointer;
+  height: 6vh;
+  min-width: fit-content;
+  border-bottom: 1px solid #ede9e9;
+  margin-bottom: 1rem;
+}
+
+.topbar-fields-dark {
+  border-bottom-color: rgb(56, 56, 56);
+}
+
+.topbar-fields img {
+  height: 30px;
+  border-radius: 50%;
+}
+
+.icon-dark path{
+  color: rgb(57, 196, 251) !important;
+}

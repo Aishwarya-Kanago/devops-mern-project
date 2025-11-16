@@ -1,24 +1,7 @@
 pipeline {
   agent any
 
-  environment {
-    FRONTEND_REPO = 'https://github.com/Aishwarya-Kanago/Admin-Dashboard.git'
-    BACKEND_REPO  = 'https://github.com/Aishwarya-Kanago/AdminDashboard-Backend.git'
-    INFRA_REPO    = 'https://github.com/Aishwarya-Kanago/Minikube-Terraform-GitHub-Actions.git'
-  }
-
   stages {
-
-    /* -----------------------------
-       CLONE ALL REPOS
-    --------------------------------*/
-    stage('Clone All Repos') {
-      steps {
-        dir('frontend') { git branch: 'main', url: env.FRONTEND_REPO }
-        dir('backend')  { git branch: 'main', url: env.BACKEND_REPO }
-        dir('infra')    { git branch: 'main', url: env.INFRA_REPO }
-      }
-    }
 
     /* -----------------------------
        BUILD DOCKER IMAGES
@@ -27,12 +10,12 @@ pipeline {
       steps {
         echo "Building Docker Images..."
 
-        // Build frontend image
+        // Build frontend (from frontend/)
         dir('frontend') {
           bat 'docker build -t mern-frontend:local .'
         }
 
-        // Build backend image
+        // Build backend (from backend/)
         dir('backend') {
           bat 'docker build -t mern-backend:local .'
         }

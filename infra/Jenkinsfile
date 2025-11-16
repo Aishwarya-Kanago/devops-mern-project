@@ -45,46 +45,47 @@
        TERRAFORM INIT & APPLY
     --------------------------------
     stage('Terraform Init & Apply') {
-      steps {
-        script {
-
-          // Auto-detect OS
-          boolean isWindows = !isUnix()
-
-          // Pick kubeconfig path based on OS
-          def kubeconfig = isWindows
-            ? "C:/Users/${env.USERNAME}/.kube/config"
-            : "/var/lib/jenkins/.kube/config"
-
-          echo "Using kubeconfig: ${kubeconfig}"
-
-          dir('infra/minikube') {
-
-            if (isWindows) {
-              bat """
-                terraform init
-                terraform validate
-                terraform apply ^
-                  -var=\\"frontend_image=mern-frontend:local\\" ^
-                  -var=\\"backend_image=mern-backend:local\\" ^
-                  -var=\\"kubeconfig_path=${kubeconfig}\\" ^
-                  -auto-approve
-              """
-            } else {
-              sh """
-                terraform init
-                terraform validate
-                terraform apply \
-                  -var="frontend_image=mern-frontend:local" \
-                  -var="backend_image=mern-backend:local" \
-                  -var="kubeconfig_path=${kubeconfig}" \
-                  -auto-approve
-              """
+          steps {
+            script {
+        
+              // Auto-detect OS
+              boolean isWindows = !isUnix()
+        
+              // Pick kubeconfig path based on OS
+              def kubeconfig = isWindows
+                ? "C:/Users/${env.USERNAME}/.kube/config"
+                : "/var/lib/jenkins/.kube/config"
+        
+              echo "Using kubeconfig: ${kubeconfig}"
+        
+              dir('infra/minikube') {
+        
+                if (isWindows) {
+                  bat """
+                    terraform init
+                    terraform validate
+                    terraform apply ^
+                      -var="frontend_image=mern-frontend:local" ^
+                      -var="backend_image=mern-backend:local" ^
+                      -var="kubeconfig_path=${kubeconfig}" ^
+                      -auto-approve
+                  """
+                } else {
+                  sh """
+                    terraform init
+                    terraform validate
+                    terraform apply \
+                      -var="frontend_image=mern-frontend:local" \
+                      -var="backend_image=mern-backend:local" \
+                      -var="kubeconfig_path=${kubeconfig}" \
+                      -auto-approve
+                  """
+                }
+              }
             }
           }
         }
-      }
-    }
+
     /* -----------------------------
        VERIFY DEPLOYMENT
     --------------------------------

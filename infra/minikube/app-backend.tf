@@ -33,7 +33,7 @@ resource "kubernetes_deployment" "backend" {
           }
 
           env {
-            name  = "MONGO_URL"
+            name  = "DATABASE_URL"
             value = "mongodb://mongo-svc.${var.namespace}.svc.cluster.local:27017/mern"
           }
 

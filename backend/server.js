@@ -26,7 +26,7 @@ app.use("/users", usersRouter);
 const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
 
-app.listen(5000, () => console.log("Server Started"));
+app.listen(3000, "0.0.0.0", () => console.log("Server Started"));
 
 // ---- PROMETHEUS METRICS SETUP ----
 const client = require("prom-client");

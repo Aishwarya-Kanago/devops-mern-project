@@ -1,10 +1,10 @@
 provider "kubernetes" {
-  config_path = "C:/Users/Aishwarya_SK/.kube/config"
+  config_path = "C:/ProgramData/Jenkins/.kube/config"
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "C:/Users/Aishwarya_SK/.kube/config"
+    config_path = "C:/ProgramData/Jenkins/.kube/config"
   }
 }
 

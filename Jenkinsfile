@@ -157,7 +157,6 @@ pipeline {
             terraform apply ^
               -var="frontend_image=mern-frontend:local" ^
               -var="backend_image=mern-backend:local" ^
-              -var-file="terraform.tfvars" ^
               -auto-approve
           '''
         }

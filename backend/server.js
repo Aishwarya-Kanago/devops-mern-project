@@ -27,3 +27,33 @@ const productsRouter = require("./routes/products");
 app.use("/products", productsRouter);
 
 app.listen(5000, () => console.log("Server Started"));
+
+// ---- PROMETHEUS METRICS SETUP ----
+const client = require("prom-client");
+
+// Enable collection of default metrics (CPU, memory, event loop, etc.)
+client.collectDefaultMetrics();
+
+// Create custom histogram for request duration
+const httpRequestDurationMicroseconds = new client.Histogram({
+  name: "http_request_duration_ms",
+  help: "Duration of HTTP requests in ms",
+  labelNames: ["method", "route", "status_code"],
+  buckets: [50, 100, 300, 500, 1000, 2000, 5000],
+});
+
+// Middleware to measure API latency
+app.use((req, res, next) => {
+  const end = httpRequestDurationMicroseconds.startTimer();
+  res.on("finish", () => {
+    end({ method: req.method, route: req.path, status_code: res.statusCode });
+  });
+  next();
+});
+
+// Metrics endpoint
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
+});
+// ---- END PROMETHEUS METRICS SETUP ----

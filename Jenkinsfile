@@ -108,18 +108,27 @@ pipeline {
   stages {
 
     /* -----------------------------
+       CHECKOUT CODE
+    --------------------------------*/
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    /* -----------------------------
        BUILD DOCKER IMAGES
     --------------------------------*/
     stage('Build Docker Images') {
       steps {
-        echo "Building Docker Images..."
+        echo "🚀 Building Docker Images..."
 
-        // Build frontend (from frontend/)
+        // Build frontend image
         dir('frontend') {
           bat 'docker build -t mern-frontend:local .'
         }
 
-        // Build backend (from backend/)
+        // Build backend image
         dir('backend') {
           bat 'docker build -t mern-backend:local .'
         }
@@ -138,7 +147,10 @@ pipeline {
     --------------------------------*/
     stage('Terraform Init & Apply') {
       steps {
-        dir('infra') {
+        echo "➡️ Running Terraform..."
+
+        // FIXED: Correct directory is infra/minikube
+        dir('infra/minikube') {
           bat '''
             terraform init
             terraform validate
@@ -156,6 +168,8 @@ pipeline {
     --------------------------------*/
     stage('Verify Deployment') {
       steps {
+        echo "🔍 Verifying Deployment..."
+
         bat 'kubectl get pods -n demo'
         bat 'kubectl get svc -n demo'
         bat 'kubectl get ingress -n demo'

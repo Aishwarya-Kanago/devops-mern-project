@@ -1,17 +1,22 @@
-# Get Minikube IP using external provider
+/*GET MINIKUBE IP*/
 data "external" "minikube_ip" {
-  program = ["powershell", "-Command", "minikube ip | % { '{\"ip\":\"' + $_ + '\"}' }"]
+  program = [
+    "powershell",
+    "-NoProfile",
+    "-Command",
+    "($ip = minikube ip).Trim(); Write-Output ('{\"ip\":\"' + $ip + '\"}')"
+  ]
 }
 
-# Build hostname
+
+/*LOCAL VARIABLES*/
 locals {
-  minikube_ip = data.external.minikube_ip.result.ip
+  minikube_ip = trim(data.external.minikube_ip.result.ip)
+  host        = var.domain != "" ? "app.${var.domain}" : "app.${local.minikube_ip}.nip.io"
 }
 
-locals {
-  host = var.domain != "" ? "app.${var.domain}" : "app.${local.minikube_ip}.nip.io"
-}
 
+/*INGRESS RESOURCE*/
 resource "kubernetes_ingress_v1" "app" {
   metadata {
     name      = "mern-ingress"
@@ -31,7 +36,9 @@ resource "kubernetes_ingress_v1" "app" {
           backend {
             service {
               name = kubernetes_service.frontend.metadata[0].name
-              port { number = 80 }
+              port {
+                number = 80
+              }
             }
           }
         }
@@ -40,6 +47,8 @@ resource "kubernetes_ingress_v1" "app" {
   }
 }
 
+/*OUTPUT*/
 output "app_url" {
-  value = "http://${local.host}"
+  description = "Ingress URL"
+  value       = "http://${local.host}"
 }

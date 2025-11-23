@@ -142,19 +142,21 @@ pipeline {
         echo "➡️ Running Terraform..."
 
         dir('infra/minikube') {
+          withEnv(["KUBECONFIG=${env.USERPROFILE}\\.kube\\config"]) {
 
-          // Inject KUBECONFIG so Terraform + kubectl use correct cluster API
-          bat '''
-            set KUBECONFIG=%KUBECONFIG%
-            kubectl config current-context
+            bat """
+              echo Using kubeconfig: %KUBECONFIG%
 
-            terraform init
-            terraform validate
-            terraform apply ^
-              -var="frontend_image=mern-frontend:local" ^
-              -var="backend_image=mern-backend:local" ^
-              -auto-approve
-          '''
+              kubectl config current-context
+
+              terraform init
+              terraform validate
+
+              terraform apply -auto-approve ^
+                -var="frontend_image=mern-frontend:local" ^
+                -var="backend_image=mern-backend:local"
+            """
+          }
         }
       }
     }

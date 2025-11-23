@@ -119,7 +119,7 @@ pipeline {
 
     stage('Build Docker Images') {
       steps {
-        echo "🚀 Building Docker Images..."
+        echo "Building Docker Images..."
 
         dir('frontend') {
           bat 'docker build -t mern-frontend:local .'
@@ -137,9 +137,41 @@ pipeline {
       }
     }
 
+    stage('Install Ingress Controller') {
+      steps {
+        echo "Ensuring Ingress Controller is installed (idempotent)..."
+
+        bat """
+          REM If minikube is available on this agent, enable its ingress addon (idempotent).
+          minikube status >nul 2>nul
+          if %errorlevel%==0 (
+            echo Using Minikube addon for ingress
+            minikube addons enable ingress
+            REM give it a few seconds to start
+            timeout /t 5 >nul
+            REM try waiting for controller in common namespaces
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s || \
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n kube-system --timeout=120s || \
+            echo Ingress controller may still be starting; continuing pipeline
+          ) else (
+            echo Minikube not detected; installing ingress-nginx via Helm
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+            helm repo update
+            helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx ^
+              --namespace ingress-nginx --create-namespace ^
+              --set controller.service.type=NodePort ^
+              --set controller.service.nodePorts.http=30080 ^
+              --set controller.service.nodePorts.https=30443
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s || \
+            echo Helm install done; controller may still be starting
+          )
+        """
+      }
+    }
+
     stage('Terraform Init & Apply') {
       steps {
-        echo "➡️ Running Terraform..."
+        echo "Running Terraform..."
 
         dir('infra/minikube') {
           withEnv(["KUBECONFIG=${env.USERPROFILE}\\.kube\\config"]) {
@@ -163,7 +195,7 @@ pipeline {
 
     stage('Verify Deployment') {
       steps {
-        echo "🔍 Verifying Deployment..."
+        echo "Verifying Deployment..."
 
         bat 'kubectl get pods -n demo'
         bat 'kubectl get svc -n demo'

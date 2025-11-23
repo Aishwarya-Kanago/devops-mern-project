@@ -216,7 +216,7 @@ pipeline {
       steps {
         echo "Printing ingress access URLs and probing reachability..."
 
-        bat """
+        bat '''
           powershell -NoProfile -Command ^
             $ip=(minikube ip).Trim(); ^
             $nodePort=(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}' 2>$null).Trim(); ^
@@ -227,7 +227,7 @@ pipeline {
             if ($nodePort) { Write-Output "  - http://app.$ip.nip.io:$nodePort/  (nodePort)"; Write-Output "  - http://$ip:$nodePort/            (direct)" }; ^
             try { (Invoke-WebRequest -UseBasicParsing -Uri "http://app.$ip.nip.io/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'nip.io host reachable' } catch { Write-Warning 'nip.io host not reachable' }; ^
             if ($nodePort) { try { (Invoke-WebRequest -UseBasicParsing -Uri "http://$ip:$nodePort/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'NodePort reachable' } catch { Write-Warning 'NodePort not reachable' } }
-        """
+        '''
       }
     }
   }

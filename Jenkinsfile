@@ -219,7 +219,7 @@ pipeline {
         bat '''
           powershell -NoProfile -Command ^
             $ip=(minikube ip).Trim(); ^
-            $nodePort=(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}' 2>$null).Trim(); ^
+            $nodePort=(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath="{.spec.ports[?(@.port==80)].nodePort}" 2>nul).Trim(); ^
             Write-Output "Minikube IP: $ip"; ^
             if ($nodePort) { Write-Output "Ingress NodePort: $nodePort" } else { Write-Output "Ingress NodePort: (not found)" }; ^
             Write-Output "Try these URLs:"; ^

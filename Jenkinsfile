@@ -140,30 +140,39 @@ pipeline {
     stage('Install Ingress Controller') {
       steps {
         echo "Ensuring Ingress Controller is installed (idempotent)..."
-
         bat """
-          REM If minikube is available on this agent, enable its ingress addon (idempotent).
+          REM Idempotent ingress install: prefer minikube addon when available.
+
+          REM Check if minikube is present on this agent
           minikube status >nul 2>nul
           if %errorlevel%==0 (
-            echo Using Minikube addon for ingress
+            echo Minikube detected - enabling minikube ingress addon
+
+            REM If a helm-installed ingress-nginx exists, try to uninstall to avoid conflicts
+            helm list -n ingress-nginx -q 2>nul | findstr ingress-nginx >nul 2>nul
+            if %errorlevel%==0 (
+              echo Uninstalling existing helm ingress-nginx release
+              helm uninstall ingress-nginx -n ingress-nginx || echo "Helm uninstall failed or release not found"
+              kubectl delete namespace ingress-nginx --ignore-not-found || echo "namespace cleanup skipped"
+            )
+
             minikube addons enable ingress
-            REM give it a few seconds to start
-            timeout /t 5 >nul
-            REM try waiting for controller in common namespaces
-            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s || \
-            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n kube-system --timeout=120s || \
-            echo Ingress controller may still be starting; continuing pipeline
+            REM Wait for controller - minikube addon may place controller in kube-system
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=60s || \
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n kube-system --timeout=60s || \
+            echo "Ingress controller may still be starting"
+
           ) else (
-            echo Minikube not detected; installing ingress-nginx via Helm
+            echo Minikube not detected - installing ingress-nginx via Helm (idempotent)
             helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
             helm repo update
             helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx ^
               --namespace ingress-nginx --create-namespace ^
               --set controller.service.type=NodePort ^
-              --set controller.service.nodePorts.http=30080 ^
-              --set controller.service.nodePorts.https=30443
-            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s || \
-            echo Helm install done; controller may still be starting
+              --set controller.service.nodePorts.http=32758 ^
+              --set controller.service.nodePorts.https=31049
+
+            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s || echo "controller may still be starting"
           )
         """
       }
@@ -200,6 +209,25 @@ pipeline {
         bat 'kubectl get pods -n demo'
         bat 'kubectl get svc -n demo'
         bat 'kubectl get ingress -n demo'
+      }
+    }
+
+    stage('Print Access Info') {
+      steps {
+        echo "Printing ingress access URLs and probing reachability..."
+
+        bat """
+          powershell -NoProfile -Command ^
+            $ip=(minikube ip).Trim(); ^
+            $nodePort=(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}' 2>$null).Trim(); ^
+            Write-Output "Minikube IP: $ip"; ^
+            if ($nodePort) { Write-Output "Ingress NodePort: $nodePort" } else { Write-Output "Ingress NodePort: (not found)" }; ^
+            Write-Output "Try these URLs:"; ^
+            Write-Output "  - http://app.$ip.nip.io/      (preferred, no :port)"; ^
+            if ($nodePort) { Write-Output "  - http://app.$ip.nip.io:$nodePort/  (nodePort)"; Write-Output "  - http://$ip:$nodePort/            (direct)" }; ^
+            try { (Invoke-WebRequest -UseBasicParsing -Uri "http://app.$ip.nip.io/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'nip.io host reachable' } catch { Write-Warning 'nip.io host not reachable' }; ^
+            if ($nodePort) { try { (Invoke-WebRequest -UseBasicParsing -Uri "http://$ip:$nodePort/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'NodePort reachable' } catch { Write-Warning 'NodePort not reachable' } }
+        """
       }
     }
   }

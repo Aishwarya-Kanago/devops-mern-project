@@ -11,7 +11,7 @@ data "external" "minikube_ip" {
 
 /*LOCAL VARIABLES*/
 locals {
-  minikube_ip = trim(data.external.minikube_ip.result.ip)
+  minikube_ip = trim(data.external.minikube_ip.result.ip, "\"")
   host        = var.domain != "" ? "app.${var.domain}" : "app.${local.minikube_ip}.nip.io"
 }
 

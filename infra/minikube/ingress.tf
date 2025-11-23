@@ -3,11 +3,12 @@ data "external" "minikube_ip" {
   program = [
     "powershell",
     "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy", "Bypass",
     "-Command",
-    "($ip = minikube ip).Trim(); Write-Output ('{\"ip\":\"' + $ip + '\"}')"
+    "$ip = (minikube ip | Out-String).Trim(); Write-Output ('{\"ip\":\"' + $ip + '\"}')"
   ]
 }
-
 
 /*LOCAL VARIABLES*/
 locals {

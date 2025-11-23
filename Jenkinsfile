@@ -105,35 +105,30 @@
 pipeline {
   agent any
 
+  environment {
+    KUBECONFIG = "C:/Users/Aishwarya SK/.kube/config"
+  }
+
   stages {
 
-    /* -----------------------------
-       CHECKOUT CODE
-    --------------------------------*/
     stage('Checkout') {
       steps {
         checkout scm
       }
     }
 
-    /* -----------------------------
-       BUILD DOCKER IMAGES
-    --------------------------------*/
     stage('Build Docker Images') {
       steps {
         echo "🚀 Building Docker Images..."
 
-        // Build frontend image
         dir('frontend') {
           bat 'docker build -t mern-frontend:local .'
         }
 
-        // Build backend image
         dir('backend') {
           bat 'docker build -t mern-backend:local .'
         }
 
-        // Load images into Minikube
         bat '''
           echo Loading images into Minikube...
           minikube image load mern-frontend:local
@@ -142,16 +137,17 @@ pipeline {
       }
     }
 
-    /* -----------------------------
-       TERRAFORM INIT & APPLY
-    --------------------------------*/
     stage('Terraform Init & Apply') {
       steps {
         echo "➡️ Running Terraform..."
 
-        // FIXED: Correct directory is infra/minikube
         dir('infra/minikube') {
+
+          // Inject KUBECONFIG so Terraform + kubectl use correct cluster API
           bat '''
+            set KUBECONFIG=%KUBECONFIG%
+            kubectl config current-context
+
             terraform init
             terraform validate
             terraform apply ^
@@ -163,9 +159,6 @@ pipeline {
       }
     }
 
-    /* -----------------------------
-       VERIFY DEPLOYMENT
-    --------------------------------*/
     stage('Verify Deployment') {
       steps {
         echo "🔍 Verifying Deployment..."

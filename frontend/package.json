@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "/Admin-Dashboard",
   "scripts": {
     "dev": "vite",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "build": "vite build",
+    "build": "vite build --base /Admin-Dashboard/",
     "lint": "eslint .",
     "preview": "vite build; vite preview --host"
   },

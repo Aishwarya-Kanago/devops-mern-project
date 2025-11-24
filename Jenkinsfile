@@ -139,73 +139,19 @@ pipeline {
 
     stage('Install Ingress Controller') {
       steps {
-        echo "Ensuring Ingress Controller is installed (idempotent)..."
+        echo "Ensuring Ingress Controller is installed..."
+
         bat """
           @echo on
-          REM Idempotent ingress install: prefer minikube addon when available.
+          echo Enabling Minikube ingress addon
+          minikube addons enable ingress
+          if not %errorlevel%==0 exit /b 1
 
-          echo STEP1: Checking minikube status
-          minikube status >nul 2>nul
-          echo STEP1 errorlevel: %errorlevel%
-
-          if %errorlevel%==0 (
-            echo STEP2: Minikube detected - enabling minikube ingress addon
-
-            echo STEP3: Checking for existing helm ingress-nginx
-            helm list -n ingress-nginx -q 2>nul | findstr ingress-nginx >nul 2>nul
-            echo STEP3 errorlevel: %errorlevel%
-
-            if %errorlevel%==0 (
-              echo STEP4: Uninstalling existing helm ingress-nginx release
-              helm uninstall ingress-nginx -n ingress-nginx
-              echo STEP4 helm uninstall errorlevel: %errorlevel%
-              if not %errorlevel%==0 exit /b 1
-              kubectl delete namespace ingress-nginx --ignore-not-found
-              echo STEP4 kubectl delete ns errorlevel: %errorlevel%
-              if not %errorlevel%==0 exit /b 1
-            )
-
-            echo STEP5: Enabling minikube ingress addon
-            minikube addons enable ingress
-            echo STEP5 errorlevel: %errorlevel%
-            if not %errorlevel%==0 exit /b 1
-
-            echo STEP6: Waiting for ingress controller pod (ingress-nginx)
-            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=60s
-            echo STEP6a errorlevel: %errorlevel%
-            if not %errorlevel%==0 (
-              echo STEP6b: Trying kube-system namespace
-              kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n kube-system --timeout=60s
-              echo STEP6b errorlevel: %errorlevel%
-              if not %errorlevel%==0 (
-                echo STEP6c: Ingress controller may still be starting
-                exit /b 1
-              )
-            )
-
-          ) else (
-            echo STEP7: Minikube not detected - installing ingress-nginx via Helm (idempotent)
-            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-            echo STEP7a errorlevel: %errorlevel%
-            if not %errorlevel%==0 exit /b 1
-            helm repo update
-            echo STEP7b errorlevel: %errorlevel%
-            if not %errorlevel%==0 exit /b 1
-            helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx ^
-              --namespace ingress-nginx --create-namespace ^
-              --set controller.service.type=NodePort ^
-              --set controller.service.nodePorts.http=32758 ^
-              --set controller.service.nodePorts.https=31049
-            echo STEP7c errorlevel: %errorlevel%
-            if not %errorlevel%==0 exit /b 1
-
-            echo STEP8: Waiting for ingress controller pod (ingress-nginx)
-            kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s
-            echo STEP8 errorlevel: %errorlevel%
-            if not %errorlevel%==0 (
-              echo STEP8b: controller may still be starting
-              exit /b 1
-            )
+          echo Waiting for ingress controller pod to be ready...
+          kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s
+          if not %errorlevel%==0 (
+            echo Controller still starting...
+            exit /b 1
           )
         """
       }

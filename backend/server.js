@@ -13,7 +13,9 @@ app.use(express.json());
 
 const cors = require("cors");
 var corsOptions = {
-  origin: ["http://localhost:5173", "https://aishwarya-kanago.github.io"],
+  // Allow requests from the frontend served by ingress (same-origin)
+  // In development, allow any origin so Minikube + nip.io host works.
+  origin: true,
   optionsSuccessStatus: 200,
   methods: "GET, PUT, POST, PATCH, DELETE",
 };
@@ -21,10 +23,11 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 const usersRouter = require("./routes/users");
-app.use("/users", usersRouter);
+// Mount API routers under /api so ingress path /api/* maps correctly
+app.use("/api/users", usersRouter);
 
 const productsRouter = require("./routes/products");
-app.use("/products", productsRouter);
+app.use("/api/products", productsRouter);
 
 const server = app.listen(3000, "0.0.0.0", () => console.log("Server Started"));
 server.on("error", console.error);

@@ -195,21 +195,24 @@ pipeline {
       steps {
         echo "Fetching ingress access URL..."
 
-        bat '''
-          powershell -NoProfile -Command ^
-            $ip = (minikube ip).Trim(); ^
-            $host = "app.$ip.nip.io"; ^
-            Write-Output "==================================="; ^
-            Write-Output "  ACCESS YOUR APPLICATION HERE:"; ^
-            Write-Output "      http://$host/"; ^
-            Write-Output "==================================="; ^
-            try { ^
-              (Invoke-WebRequest -UseBasicParsing -Uri "http://$host/" -TimeoutSec 5).StatusCode | Out-Null; ^
-              Write-Output "Frontend reachable"; ^
-            } catch { ^
-              Write-Warning "Frontend NOT reachable"; ^
+        bat """
+          powershell -NoProfile -Command "
+            \$ip = (minikube ip).Trim();
+            \$host = 'app.' + \$ip + '.nip.io';
+
+            Write-Output '===================================';
+            Write-Output '  ACCESS YOUR APPLICATION HERE:';
+            Write-Output ('      http://' + \$host + '/');
+            Write-Output '===================================';
+
+            try {
+              Invoke-WebRequest -UseBasicParsing -Uri ('http://' + \$host + '/') -TimeoutSec 5 | Out-Null;
+              Write-Output 'Frontend reachable ✔';
+            } catch {
+              Write-Warning 'Frontend NOT reachable ✘';
             }
-        '''
+          "
+        """
       }
     }
   }

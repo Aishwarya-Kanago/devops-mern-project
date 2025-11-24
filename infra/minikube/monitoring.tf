@@ -4,7 +4,7 @@ resource "kubernetes_namespace" "monitoring" {
   }
 }
 
-resource "helm_release" "monitoring" {
+/*resource "helm_release" "monitoring" {
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
@@ -23,4 +23,4 @@ prometheus:
     nodePort: 32001
 EOF
   ]
-}
+}*/

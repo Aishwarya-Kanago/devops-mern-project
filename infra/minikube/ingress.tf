@@ -1,9 +1,12 @@
-/* GET MINIKUBE IP */
+/* GET MINIKUBE IP - WINDOWS POWERSHELL VERSION */
 data "external" "minikube_ip" {
-  program = ["bash", "-c", <<EOF
-ip=$(minikube ip | tr -d '\n');
-echo "{\"ip\":\"$ip\"}"
-EOF
+  program = [
+    "powershell",
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy", "Bypass",
+    "-Command",
+    "$ip = (minikube ip | Out-String).Trim(); Write-Output ('{\"ip\":\"' + $ip + '\"}')"
   ]
 }
 

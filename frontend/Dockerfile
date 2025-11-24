@@ -6,13 +6,16 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: serve
+# Stage 2: serve with NGINX
 FROM nginx:alpine
 
-# Add SPA routing rules for React/Vite
-COPY nginx.conf /etc/nginx/http.d/default.conf
+# Remove default nginx config
+RUN rm -f /etc/nginx/conf.d/default.conf
 
-# Copy entire dist folder
+# Copy your custom nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy the built frontend
 COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80

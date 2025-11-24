@@ -17,7 +17,7 @@ function App() {
   const theme = useSelector((state) => state.theme.currentTheme);
 
   return (
-    <Router basename="/Admin-Dashboard">
+    <Router>
       <UserContextProvider>
         <div className={`home-page ${theme === "dark" && "darkMode"} `}>
           <Sidebar />

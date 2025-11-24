@@ -172,7 +172,7 @@ pipeline {
               terraform init
               terraform validate
 
-              terraform apply -auto-approve ^
+              terraform apply -refresh=true -auto-approve ^
                 -var="frontend_image=mern-frontend:local" ^
                 -var="backend_image=mern-backend:local"
             """
@@ -193,19 +193,22 @@ pipeline {
 
     stage('Print Access Info') {
       steps {
-        echo "Printing ingress access URLs and probing reachability..."
+        echo "Fetching ingress access URL..."
 
         bat '''
           powershell -NoProfile -Command ^
-            $ip=(minikube ip).Trim(); ^
-            $nodePort=(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath="{.spec.ports[?(@.port==80)].nodePort}" 2>nul).Trim(); ^
-            Write-Output "Minikube IP: $ip"; ^
-            if ($nodePort) { Write-Output "Ingress NodePort: $nodePort" } else { Write-Output "Ingress NodePort: (not found)" }; ^
-            Write-Output "Try these URLs:"; ^
-            Write-Output "  - http://app.$ip.nip.io/      (preferred, no :port)"; ^
-            if ($nodePort) { Write-Output "  - http://app.$ip.nip.io:$nodePort/  (nodePort)"; Write-Output "  - http://$ip:$nodePort/            (direct)" }; ^
-            try { (Invoke-WebRequest -UseBasicParsing -Uri "http://app.$ip.nip.io/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'nip.io host reachable' } catch { Write-Warning 'nip.io host not reachable' }; ^
-            if ($nodePort) { try { (Invoke-WebRequest -UseBasicParsing -Uri "http://$ip:$nodePort/" -TimeoutSec 5).StatusCode | Out-Null; Write-Output 'NodePort reachable' } catch { Write-Warning 'NodePort not reachable' } }
+            $ip = (minikube ip).Trim(); ^
+            $host = "app.$ip.nip.io"; ^
+            Write-Output "==================================="; ^
+            Write-Output "  ACCESS YOUR APPLICATION HERE:"; ^
+            Write-Output "      http://$host/"; ^
+            Write-Output "==================================="; ^
+            try { ^
+              (Invoke-WebRequest -UseBasicParsing -Uri "http://$host/" -TimeoutSec 5).StatusCode | Out-Null; ^
+              Write-Output "Frontend reachable"; ^
+            } catch { ^
+              Write-Warning "Frontend NOT reachable"; ^
+            }
         '''
       }
     }

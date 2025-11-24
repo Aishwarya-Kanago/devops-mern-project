@@ -10,7 +10,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Add SPA routing rules for React/Vite
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/http.d/default.conf
 
 # Copy entire dist folder
 COPY --from=build /app/dist /usr/share/nginx/html

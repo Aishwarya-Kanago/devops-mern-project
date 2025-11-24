@@ -122,11 +122,11 @@ pipeline {
         echo "Building Docker Images..."
 
         dir('frontend') {
-          bat 'docker build -t mern-frontend:local .'
+          bat 'docker build --no-cache -t mern-frontend:local .'
         }
 
         dir('backend') {
-          bat 'docker build -t mern-backend:local .'
+          bat 'docker build --no-cache -t mern-backend:local .'
         }
 
         bat '''

@@ -120,19 +120,23 @@ pipeline {
     stage('Build Docker Images') {
       steps {
         echo "Building Docker Images..."
+        // Use a unique tag (build number) so terraform sees an image change
+        script {
+          env.IMAGE_TAG = "${env.BUILD_NUMBER}"
+        }
 
         dir('frontend') {
-          bat 'docker build --no-cache -t mern-frontend:local .'
+          bat "docker build --no-cache -t mern-frontend:%IMAGE_TAG% ."
         }
 
         dir('backend') {
-          bat 'docker build --no-cache -t mern-backend:local .'
+          bat "docker build --no-cache -t mern-backend:%IMAGE_TAG% ."
         }
 
         bat '''
           echo Loading images into Minikube...
-          minikube image load mern-frontend:local
-          minikube image load mern-backend:local
+          minikube image load mern-frontend:%IMAGE_TAG%
+          minikube image load mern-backend:%IMAGE_TAG%
         '''
       }
     }
@@ -173,11 +177,21 @@ pipeline {
               terraform validate
 
               terraform apply -refresh=true -auto-approve ^
-                -var="frontend_image=mern-frontend:local" ^
-                -var="backend_image=mern-backend:local"
+                -var="frontend_image=mern-frontend:%IMAGE_TAG%" ^
+                -var="backend_image=mern-backend:%IMAGE_TAG%"
             """
           }
         }
+      }
+    }
+
+    stage('Ensure Rollout') {
+      steps {
+        echo "Triggering rollout to pick up new images"
+        bat "kubectl -n demo set image deployment/frontend frontend=mern-frontend:%IMAGE_TAG% --record || echo 'set-image failed'"
+        bat "kubectl -n demo set image deployment/backend backend=mern-backend:%IMAGE_TAG% --record || echo 'set-image failed'"
+        bat 'kubectl -n demo rollout status deployment/frontend'
+        bat 'kubectl -n demo rollout status deployment/backend'
       }
     }
 
